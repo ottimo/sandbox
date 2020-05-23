@@ -37,6 +37,24 @@ This project is based on:
 - custom ansible script
 
 
+To Install:
+
+```
+cd roles/ansible-cuckoo-sandbox
+./get-dependencies.sh
+```
+
+To use the sandbox, you have to create a GCP project and a service account with editor permission.
+Download the json credentials file and rename it account.json.
+Then:
+
+```
+PROJECT=sandbox make init
+PROJECT=sandbox make plan
+PROJECT=sandbox make apply
+
+```
+
 
 # terraform-skeleton
 When I first started with Terraform a few years ago, I wanted to have my repositories structured in a logical fashion, but nothing I found seemed to fit what I was looking for.  I searched the internet to find out what HashiCorp recommended and what other people are doing, but nothin I saw really felt right to me.  In examining what other people were doing, however, I was able to take the best parts from various layouts and meld it into a structure that worked for me and I have been using it ever since.

@@ -1,0 +1,7 @@
+[submodule "roles/ansible-cuckoo-sandbox"]
+	path = roles/ansible-cuckoo-sandbox
+	url = https://github.com/juju4/ansible-cuckoo-sandbox.git
+[submodule "roles/Ansible-Cuckoo"]
+	path = roles/Ansible-Cuckoo
+	url = https://github.com/julianoborba/Ansible-Cuckoo.git
+
