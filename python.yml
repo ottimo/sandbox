@@ -1,0 +1,9 @@
+---
+- hosts: all
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+    - name: Install Prerequisites
+      apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+    - name: Install required system packages
+      apt: name=python state=latest

@@ -1,0 +1,10 @@
+---
+  sys_packages:
+    - ufw
+    - virtualenvwrapper
+    - packer
+    - vim
+    - expect
+    - tmux
+    - vagrant
+  virtualbox_version: 5.2

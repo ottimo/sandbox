@@ -1,0 +1,85 @@
+---
+- hosts: all
+  vars_files:
+    - provision-server.vars.yml
+  tags: init
+  tasks:
+    - name: Update apt cache
+      apt: update_cache=yes
+    - name: Install Prerequisites
+      apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+    - name: Install required system packages
+      apt: name={{ sys_packages }} state=latest
+    - name: Disable password authentication for root
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin prohibit-password'
+         # UFW Setup
+    - name: UFW - Allow SSH connections
+      ufw:
+        rule: allow
+        name: OpenSSH
+    - name: UFW - Deny all other incoming traffic by default
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+    - include: subtasks/ubuntu-network-hardening.yml
+- hosts: all
+  tags: cuckoo
+  vars_files:
+    - provision-server.vars.yml
+  roles:
+    - juju4.cuckoo_sandbox
+- hosts: all
+  tags: packer
+  tasks:
+    - name: copy script to install VBox ExtPack
+      copy: src=scripts/install-vbox-extpack.sh dest=/tmp/install-vbox-extpack.sh
+    - name: setting exec permission to VBox ExtPack script
+      file: path=/tmp/install-vbox-extpack.sh mode=700
+    - name: install VirtualBox Extension Pack
+      shell: |
+        set timeout 300
+        spawn bash -c /tmp/install-vbox-extpack.sh
+
+        expect "Do you agree to these license terms and conditions (y/n)? "
+        send "y\n"
+
+        expect "100%"
+        exit 0
+      args:
+        executable: /usr/bin/expect
+    - name: cuckoo init dir
+      stat:
+        path: /root/.cuckoo
+      register: cuckoo_dir
+    - name: init cuckoo
+      script: scripts/init-cuckoo.sh
+      # shell: source bin/activate; cuckoo init
+      # args:
+      #   chdir: /var/_cuckoo/env-cuckoo/
+      when: not cuckoo_dir.stat.exists
+- hosts: all
+  tags: packer
+  become: yes
+  become_user: _cuckoo
+  tasks:
+    - git:
+        repo: 'https://github.com/boxcutter/windows.git'
+        dest: /var/_cuckoo/windows
+    - git:
+        repo: 'https://github.com/juju4/windows.git'
+        dest: /var/_cuckoo/juju4-windows
+    - git:
+        repo: 'https://github.com/mwrock/packer-templates.git'
+        dest: /var/_cuckoo/mwrock-packer-temlates
+    - git:
+        repo: 'https://github.com/ruzickap/packer-templates.git'
+        dest: /var/_cuckoo/packer-templates
+    # - name: create cuckoo guest image
+    #   shell: tmux new-session -d -s "packer-session" 'HEADLESS=true make -f Makefile.cuckoo virtualbox/eval-win7x64-enterprise-cuckoo'
+    #   args:
+    #     chdir: /var/_cuckoo/juju4-windows

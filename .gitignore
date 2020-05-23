@@ -1,0 +1,14 @@
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+.idea/
+
+.env
+*.retry
+
+# Account file from GCP
+account.json
