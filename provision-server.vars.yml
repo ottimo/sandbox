@@ -9,7 +9,6 @@
     - vagrant
     - guacamole
   virtualbox_version: 5.2
-
   cuckoo_pkg:
     - python
     - python-pip
@@ -30,3 +29,6 @@
   cuckoo_pip_pkg:
     - mitmproxy
     - m2crypto
+
+  python_bin: python2
+  pip_bin: pip2
