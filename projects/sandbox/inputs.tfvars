@@ -9,6 +9,8 @@ region      = "us-west1"
 # Name variable definition
 name = "sb"
 
+disk_size = 40
+
 # Defining a variable source OS image for an instance
 image = "ubuntu-os-cloud/ubuntu-minimal-1804-lts"
 

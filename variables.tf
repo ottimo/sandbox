@@ -38,3 +38,8 @@ variable "zone" {
 
 # Determining the ssh key that will be added to the instance when creating
 variable "public_key" {}
+
+variable "disk_size" {
+  type = number
+  default = 20
+}

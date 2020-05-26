@@ -21,6 +21,14 @@
       ufw:
         rule: allow
         name: OpenSSH
+    - name: Allow all access from RFC1918 networks to this host
+      ufw:
+        rule: allow
+        src: '{{ item }}'
+      loop:
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
     - name: UFW - Deny all other incoming traffic by default
       ufw:
         state: enabled
@@ -52,9 +60,21 @@
         exit 0
       args:
         executable: /usr/bin/expect
+    - shell: aa-disable /usr/sbin/tcpdump
+- hosts: all
+  tags: cuckoo
+  tasks:
+    - user:
+        name: _cuckoo
+        shell: /bin/bash
+- hosts: all
+  tags: cuckoo
+  become: yes
+  become_user: _cuckoo
+  tasks:
     - name: cuckoo init dir
       stat:
-        path: /root/.cuckoo
+        path: /var/_cuckoo/.cuckoo
       register: cuckoo_dir
     - name: init cuckoo
       script: scripts/init-cuckoo.sh
@@ -83,3 +103,49 @@
     #   shell: tmux new-session -d -s "packer-session" 'HEADLESS=true make -f Makefile.cuckoo virtualbox/eval-win7x64-enterprise-cuckoo'
     #   args:
     #     chdir: /var/_cuckoo/juju4-windows
+- hosts: all
+  tags: vagrant
+  tasks:
+    - name: Add an Apt signing key, will not download if present
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: D2BABDFD63EA9ECAB4E09C7228A873EA3C7C705F
+        state: present
+    - apt_repository:
+        repo: deb https://vagrant-deb.linestarve.com/ any main 
+        state: present
+        filename: vagrant
+    - apt:
+        name: vagrant
+        update_cache: yes
+        state: latest
+    - shell: vagrant plugin install winrm
+    - shell: vagrant plugin install winrm-fs
+- hosts: all
+  tags: vagrant
+  become: yes
+  become_user: _cuckoo
+  tasks:
+    - file:
+        path: /var/_cuckoo/guest
+        state: directory
+    - copy: src=scripts/Vagrantfile dest=/var/_cuckoo/guest/Vagrantfile
+    - git:
+        repo: https://github.com/nbeede/BoomBox.git
+        dest: /var/_cuckoo/guest/BoomBox
+    - file: 
+        src: /var/_cuckoo/guest/BoomBox/Vagrant/scripts
+        dest: /var/_cuckoo/guest/scripts
+        state: link
+    - shell: tmux new-session -d -s guest 'vagrant up ; VBoxManage snapshot "cuckoo1" take "snapshot1" --pause'
+      args:
+        chdir: /var/_cuckoo/guest
+    #- shell: vagrant winrm -c 'route change 0.0.0.0  MASK 0.0.0.0 192.168.56.1  METRIC 10'
+    #- shell: VBoxManage snapshot "cuckoo1" take "snapshot1" --pause
+
+- hosts: all
+  tags: misp
+  tasks:
+    - git:
+        repo: https://github.com/drbeni/docker-misp
+        dest: /opt/docker-misp

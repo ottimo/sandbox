@@ -6,8 +6,9 @@
     - vim
     - expect
     - tmux
-    - vagrant
     - guacamole
+    - apparmor-utils
+    - iputils-ping
   virtualbox_version: 5.2
   cuckoo_pkg:
     - python
@@ -25,7 +26,6 @@
     - swig
     - libyara-dev
     - guacamole
-
   cuckoo_pip_pkg:
     - mitmproxy
     - m2crypto

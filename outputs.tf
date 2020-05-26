@@ -17,7 +17,7 @@ resource "google_compute_disk" "sandbox-disk" {
   type  = "pd-ssd"
   zone  = "us-west1-a"
   image = data.google_compute_image.sandbox-nested-virt.self_link
-
+  size = var.disk_size
 }
 
 
@@ -25,6 +25,7 @@ resource "google_compute_image" "sandbox-nested-virt" {
   name = "sandbox-nested-virt"
   family = "ubuntu-minimal-1804-lts"
   source_disk = google_compute_disk.sandbox-disk.self_link
+  disk_size_gb = var.disk_size
   licenses = ["https://www.googleapis.com/compute/v1/projects/vm-options/global/licenses/enable-vmx"]
 }
 
@@ -36,7 +37,7 @@ resource "google_compute_instance" "default" {
   boot_disk {
     initialize_params {
       image = google_compute_image.sandbox-nested-virt.self_link
-      size= 20
+      size= var.disk_size
     }
   }
  
