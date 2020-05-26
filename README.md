@@ -35,6 +35,7 @@ This project is based on:
 - custom terraform configuration for GCP 
 - ansible juju4-cuckoo-sandbox
 - custom ansible script
+- nbeede/BoomBox
 
 
 To Install:
@@ -55,6 +56,17 @@ PROJECT=sandbox make apply
 
 ```
 
+After host creation and ansible configuration a tmux session will run the guest creation with vagrant.
+Before use the sandbox ensure this session finish.
+
+To start cuckoo:
+```
+ssh ip_host -l root -L 8000:localhost:8000
+su - _cuckoo
+source /var/_cuckoo/env-cuckoo/bin/activate
+cuckoo &
+cuckoo web
+```
 
 # terraform-skeleton
 When I first started with Terraform a few years ago, I wanted to have my repositories structured in a logical fashion, but nothing I found seemed to fit what I was looking for.  I searched the internet to find out what HashiCorp recommended and what other people are doing, but nothin I saw really felt right to me.  In examining what other people were doing, however, I was able to take the best parts from various layouts and meld it into a structure that worked for me and I have been using it ever since.
