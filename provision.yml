@@ -82,6 +82,16 @@
       # args:
       #   chdir: /var/_cuckoo/env-cuckoo/
       when: not cuckoo_dir.stat.exists
+    - ini_file: 
+        dest: /var/_cuckoo/.cuckoo/conf/reporting.conf 
+        section: mongodb 
+        option: enabled 
+        value: yes
+    - ini_file: 
+        dest: /var/_cuckoo/.cuckoo/conf/cuckoo.conf 
+        section: remotecontrol 
+        option: enabled 
+        value: yes
 - hosts: all
   tags: packer
   become: yes

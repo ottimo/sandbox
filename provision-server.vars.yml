@@ -9,7 +9,13 @@
     - guacamole
     - apparmor-utils
     - iputils-ping
+    - libguac-client-rdp0 
+    - libguac-client-vnc0 
+    - libguac-client-ssh0 
+    - guacd
+
   virtualbox_version: 5.2
+  
   cuckoo_pkg:
     - python
     - python-pip
@@ -26,6 +32,7 @@
     - swig
     - libyara-dev
     - guacamole
+
   cuckoo_pip_pkg:
     - mitmproxy
     - m2crypto
