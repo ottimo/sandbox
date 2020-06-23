@@ -28,6 +28,7 @@ I plan to add more tools like:
 - Suricata
 - ViperMonkey
 - CAPE
+- FAME
 
 This project is based on:
 
