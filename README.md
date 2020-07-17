@@ -29,6 +29,7 @@ I plan to add more tools like:
 - ViperMonkey
 - CAPE
 - FAME
+- capa
 
 This project is based on:
 
