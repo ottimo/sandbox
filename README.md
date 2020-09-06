@@ -30,6 +30,7 @@ I plan to add more tools like:
 - CAPE
 - FAME
 - capa
+- malice (???)
 
 This project is based on:
 
