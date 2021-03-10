@@ -60,7 +60,7 @@
         exit 0
       args:
         executable: /usr/bin/expect
-    - shell: aa-disable /usr/sbin/tcpdump
+    #- shell: aa-disable /usr/sbin/tcpdump
 - hosts: all
   tags: cuckoo
   tasks:
@@ -153,9 +153,9 @@
     #- shell: vagrant winrm -c 'route change 0.0.0.0  MASK 0.0.0.0 192.168.56.1  METRIC 10'
     #- shell: VBoxManage snapshot "cuckoo1" take "snapshot1" --pause
 
-- hosts: all
-  tags: misp
-  tasks:
-    - git:
-        repo: https://github.com/drbeni/docker-misp
-        dest: /opt/docker-misp
+# - hosts: all
+#   tags: misp
+#   tasks:
+#     - git:
+#         repo: https://github.com/drbeni/docker-misp
+#         dest: /opt/docker-misp
